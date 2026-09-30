@@ -1,0 +1,8 @@
+{
+  "starter": {
+    "repo": "https://github.com/eldra-is/storefront-starter.git",
+    "ref": "v0.1.0",
+    "description": "Nuxt storefront on the Eldra public API: shop, cart, checkout hand-off, content pages",
+    "brandFiles": ["app/app.config.ts", "nuxt.config.ts", "README.md"]
+  }
+}

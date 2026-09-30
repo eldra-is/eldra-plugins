@@ -17,6 +17,20 @@
         "path": "plugins/eldra-mcp",
         "ref": "eldra-mcp-v0.0.0"
       }
+    },
+    {
+      "name": "eldra-storefront",
+      "description": "Build a storefront on the Eldra public API: scaffold from a template, connect to a Studio organization, create its content model through the Eldra MCP, and write code against @eldrajs/sdk the way Eldra does.",
+      "author": { "name": "Eldra" },
+      "category": "development",
+      "version": "0.0.0",
+      "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-storefront",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/eldra-is/eldra-plugins.git",
+        "path": "plugins/eldra-storefront",
+        "ref": "eldra-storefront-v0.0.0"
+      }
     }
   ]
 }

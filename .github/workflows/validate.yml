@@ -20,6 +20,15 @@ jobs:
         run: node scripts/validate-plugins.mjs .
       - name: Tests
         run: bash scripts/test.sh
+      - name: Pinned template tags exist
+        run: |
+          node -e 'for (const [key, t] of Object.entries(require("./plugins/eldra-storefront/templates.json"))) console.log(key, t.repo, t.ref)' |
+          while read -r key repo ref; do
+            if ! git ls-remote --exit-code --tags "$repo" "refs/tags/$ref" >/dev/null; then
+              echo "::error::template $key pins $ref, which $repo does not have"
+              exit 1
+            fi
+          done
 
   pr-title:
     if: github.event_name == 'pull_request'
