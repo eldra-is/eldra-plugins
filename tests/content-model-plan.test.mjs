@@ -151,6 +151,17 @@ test('finishes with a report once everything is done', () => {
   assert.match(result.report.table, /\| site_header \| unchanged \| 1 \| 0 \|/);
 });
 
+test('reference multiplicity mismatch is treated as a conflict', () => {
+  const entries = { navigation_item: { 'nav-home': ID.navHome } };
+  const created = { entries: { 'entry:nav-shop': ID.navShop, 'entry:header': ID.header, 'entry:about': ID.about } };
+  const state = complete({ entries, created });
+  state.schemas[1].fields.find((f) => f.fieldId === 'items').relation.multiple = false;
+  const result = plan(manifest, state);
+  assert.equal(result.phase, 'done');
+  assert.ok(result.report.conflicts.some((c) => c.startsWith('site_header.items: the organization has reference, the manifest wants reference (multiple)')));
+  assert.ok(!result.steps.some((s) => s.tool === 'update_entry' && s.args.entryId === ID.header));
+});
+
 test('a manifest that is not an eldra.cms version 1 archive is refused', () => {
   assert.throws(() => plan({ ...manifest, version: 2 }, empty), /not an eldra\.cms version 1 archive/);
 });

@@ -30,7 +30,7 @@ function slugOf(entry) {
   return undefined;
 }
 
-const describe = (f) => `${f.type}${f.localized ? ' (localized)' : ''}`;
+const describe = (f) => `${f.type}${f.localized ? ' (localized)' : ''}${f.relation?.multiple ? ' (multiple)' : ''}`;
 const union = (a = [], b = []) => [...new Set([...a, ...b])];
 const subset = (want = [], have = []) => want.every((id) => have.includes(id));
 
@@ -163,7 +163,7 @@ export function plan(manifest, state, { dryRun = false } = {}) {
     const conflicts = new Set();
     for (const { field } of converted) {
       const existing = orgFields.get(field.fieldId);
-      if (existing && (existing.type !== field.type || Boolean(existing.localized) !== field.localized)) {
+      if (existing && (existing.type !== field.type || Boolean(existing.localized) !== field.localized || Boolean(existing.relation?.multiple) !== Boolean(field.relation?.multiple))) {
         conflicts.add(field.fieldId);
         report.conflicts.push(`${schema.apiId}.${field.fieldId}: the organization has ${describe(existing)}, the manifest wants ${describe(field)}; left unchanged and not written`);
       }
