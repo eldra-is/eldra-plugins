@@ -170,11 +170,25 @@ export function plan(manifest, state, { dryRun = false } = {}) {
     }
     conflictsBySchema.set(schema.apiId, conflicts);
     const missing = converted.map((c) => c.field).filter((f) => !orgFields.has(f.fieldId));
-    const added = missing.map(({ groupId, ...rest }) => rest);
+    const hasTitle = (org.fields ?? []).some((f) => f.isTitle);
+    const added = missing.map(({ groupId, ...rest }) => {
+      const field = { ...rest };
+      if (field.isTitle && hasTitle) {
+        field.isTitle = false;
+        report.notes.push(`${schema.apiId}.${field.fieldId}: added without isTitle; the organization's schema already has a title field`);
+      }
+      if (field.validators?.required) {
+        const { required, ...restValidators } = field.validators;
+        if (Object.keys(restValidators).length) field.validators = restValidators;
+        else delete field.validators;
+        report.notes.push(`${schema.apiId}.${field.fieldId}: added without required; set it in Studio once existing entries have values`);
+      }
+      return field;
+    });
     if (added.length) {
       schemaSteps.push({
         tool: 'update_schema',
-        args: { schemaId: org.id, fields: [...org.fields, ...added] },
+        args: { schemaId: org.id, fields: [...(org.fields ?? []), ...added] },
         record: { fields: added.map((f) => `${schema.apiId}.${f.fieldId}`) },
       });
     }
@@ -185,7 +199,7 @@ export function plan(manifest, state, { dryRun = false } = {}) {
     if (unlinked.length) {
       relinkSteps.push({
         tool: 'update_schema',
-        args: { schemaId: org.id, fields: org.fields.map((f) => { const w = unlinked.find((u) => u.fieldId === f.fieldId); return w ? withLinks(f, w) : f; }) },
+        args: { schemaId: org.id, fields: (org.fields ?? []).map((f) => { const w = unlinked.find((u) => u.fieldId === f.fieldId); return w ? withLinks(f, w) : f; }) },
         record: { relinked: schema.apiId },
       });
     }
@@ -233,9 +247,29 @@ export function plan(manifest, state, { dryRun = false } = {}) {
       const { refs } = values();
       if (!org || created.linked.includes(entry.ref)) continue;
       const data = {};
+      const fieldIsOurs = (fieldId) => created.schemas.includes(apiId) || created.fields.includes(`${apiId}.${fieldId}`);
       for (const [fieldId, { refs: targets, multiple }] of Object.entries(refs)) {
-        const ids = targets.map(resolveEntryId).filter(Boolean);
-        targets.filter((t) => !resolveEntryId(t)).forEach((t) => report.notes.push(`${label}.${fieldId}: ${t} does not exist in the organization; not linked`));
+        const orgField = (org.fields ?? []).find((f) => f.fieldId === fieldId);
+        const allowed = orgField?.relation?.allowedSchemaIds;
+        const checkAllowed = !fieldIsOurs(fieldId) && allowed?.length;
+        const ids = [];
+        for (const t of targets) {
+          const id = resolveEntryId(t);
+          if (!id) {
+            report.notes.push(`${label}.${fieldId}: ${t} does not exist in the organization; not linked`);
+            continue;
+          }
+          if (checkAllowed) {
+            const targetEntry = manifestEntryByRef.get(t);
+            const targetApiId = targetEntry && manifestSchemaByRef.get(targetEntry.schemaRef)?.apiId;
+            const targetSchemaId = targetApiId && orgByApiId.get(targetApiId)?.id;
+            if (!targetSchemaId || !allowed.includes(targetSchemaId)) {
+              report.notes.push(`${label}.${fieldId}: ${t} is a ${targetApiId ?? 'unknown schema'}, which the organization's field does not allow; link it in Studio`);
+              continue;
+            }
+          }
+          ids.push(id);
+        }
         if (ids.length) data[fieldId] = referenceValue(ids, multiple);
       }
       if (Object.keys(data).length) {

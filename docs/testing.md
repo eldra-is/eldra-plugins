@@ -17,7 +17,8 @@ and the marketplace manifest, and the `skill-reviewer` agent on each changed ski
 
 ## 1. Scaffold
 
-Start `claude --plugin-dir <checkout>/plugins/eldra-storefront` in an empty temporary directory.
+Start `claude --plugin-dir <checkout>/plugins/eldra-storefront` in an empty temporary directory such
+as `/tmp/eldra-e2e`.
 
 1. `/eldra-storefront:new-site e2e-shop`: fresh history (`git -C e2e-shop log` has no commits), brand
    renamed in the three brand files, `.env` present, `.gitignore` has `.env` and `.claude/*.local.*`.

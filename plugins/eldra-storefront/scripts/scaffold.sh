@@ -4,6 +4,7 @@
 # Exit: 0 ok, 1 usage, 2 target not empty, 3 unknown template, 4 pinned tag missing (plugin bug),
 #       5 clone failed, 6 git or node missing.
 set -euo pipefail
+export GIT_TERMINAL_PROMPT=0
 
 root="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 registry="${ELDRA_TEMPLATES_FILE:-$root/templates.json}"
@@ -158,7 +159,10 @@ cat <<NEXT
 Created $dir from $template at $ref as "$title" ($slug), with a fresh git history.
 Dependencies are not installed and nothing is running.
 
-Next, from inside $dir:
+Next: quit Claude Code, then run:
+  cd $dir && claude
+
+From inside $dir:
   1. /eldra-storefront:connect         $( [ -n "$org" ] && echo "(already set to '$org'; run it to add the MCP server here)" || echo "(choose the organization and add its MCP server)")
   2. /eldra-storefront:content-model   (create the schemas and demo entries this site reads)
 

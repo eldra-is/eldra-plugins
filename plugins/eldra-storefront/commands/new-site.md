@@ -51,7 +51,10 @@ Show any `warning:` lines the script printed.
 
 ## 5. Finish
 
-End with the two next commands, run from inside the new directory:
+Tell the user to quit Claude Code, then run `cd <name> && claude` to start a fresh session inside the
+new directory — running `connect` in this session would write settings and `.mcp.json` into the
+parent project instead of the new one. End with the two next commands, run from inside the new
+directory:
 
 1. `/eldra-storefront:connect` (skip if settings were copied and the user does not want to change them; it still adds the MCP server to the new project)
 2. `/eldra-storefront:content-model`

@@ -55,8 +55,9 @@ and the MCP origin. Never suggest or fill in a non-production URL yourself. Norm
 ## 4. Write the settings
 
 Write `.claude/eldra-storefront.local.md` (create `.claude/` if needed), replacing the whole file so
-it never holds two copies of a key. Keep an existing `template` value; leave the line out if there
-was none.
+it never holds two copies of a key. Keep an existing `template` value; if there was none, write
+`template: starter` when `cms/content-model.eldra.json` exists in the project, otherwise leave the
+line out.
 
 ```markdown
 ---

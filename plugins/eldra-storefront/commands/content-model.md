@@ -5,7 +5,7 @@ argument-hint: "[--dry-run]"
 
 # Create the content model
 
-Arguments: $ARGUMENTS
+Arguments: `$ARGUMENTS`
 
 Create in the connected organization whatever the site's content model needs and the organization
 lacks: missing schemas, missing fields on existing schemas, and missing demo entries as drafts.
@@ -79,7 +79,9 @@ Then run the planner again. Never edit the step arguments; if one looks wrong, s
 In a dry run the planner only returns `list_entries` steps. Never call a write tool in a dry run.
 
 If a call fails, stop the loop. Report the error id with the table below, print the report so far,
-and say that running the command again continues safely from where it stopped.
+and say that running the command again continues safely from where it stopped. If the run was
+interrupted right after an entry was created but before the state file was updated, that entry is
+found on the next run (by its slug) and skipped, so check its reference fields in Studio.
 
 ## 4. Report
 
