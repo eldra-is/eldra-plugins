@@ -1,6 +1,6 @@
 ---
 name: eldra-sdk
-description: This skill should be used when the user writes or reviews code that imports "@eldrajs/sdk", calls "createEldraClient", "eldra.cms", "eldra.catalog", "eldra.cart" or "checkout.handoffUrl", configures the "eldra" Vite plugin or the ".eldra/web-studio" generated types, or asks how to read CMS entries by slug, add to cart, hand off to checkout, recover an order or handle "EldraHttpError" on an Eldra storefront.
+description: This skill should be used when the user writes or reviews code that imports "@eldrajs/sdk", calls "createEldraClient", "eldra.cms", "eldra.catalog", "eldra.cart" or "checkout.handoffUrl", configures the "eldra" Vite plugin or the ".eldra/web-studio" generated types, or asks how to read CMS entries by slug, add to cart, hand off to checkout, recover an order, check stock availability or a feature flag, or handle "EldraHttpError" on an Eldra storefront.
 ---
 
 # @eldrajs/sdk
@@ -50,7 +50,7 @@ which fills `EldraContract`, plus `ELDRA_CONTRACT_VERSION`), `client.ts` and `in
 (`createWebStudioClient`, `initWebStudioClient`, `getWebStudioClient`). Rules:
 
 - The Nuxt `include` path is relative to `.nuxt/`, hence `../.eldra/**/*.ts`. Without it every
-  response is `unknown` and nothing warns you.
+  response is `unknown`, and nothing flags the mismatch.
 - The site commits `.eldra/web-studio/` (the starter ships it ignored and it is generated on the
   first build; commit it once the site has its own organization). Keep the folder whole.
 - A failed generation is a build warning and keeps the previous files.

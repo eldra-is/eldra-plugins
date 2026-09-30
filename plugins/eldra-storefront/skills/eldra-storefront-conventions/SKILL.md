@@ -1,6 +1,6 @@
 ---
 name: eldra-storefront-conventions
-description: This skill should be used when the user adds or changes a page, component, composable, route, cart behaviour, price display, image, SEO tag or locale handling in a Nuxt storefront built from the Eldra storefront starter, or asks "where should this live", "should this be in Studio or in code", "how do home sections work" or "how do content blocks work" in an Eldra site.
+description: This skill should be used when the user adds or changes a page, component, composable, route, cart behaviour, price display, image, SEO tag or locale handling in a Nuxt storefront built from the Eldra storefront starter, or asks "where should this live", "should this be in Studio or in code", "how do home sections work" or "how do content blocks work" in an Eldra site, or asks how to write an end-to-end test or what to run before finishing a change.
 ---
 
 # Eldra storefront conventions
