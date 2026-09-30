@@ -1,0 +1,45 @@
+{
+  "format": "eldra.cms",
+  "version": 1,
+  "source": { "organizationId": "fixture" },
+  "schemas": [
+    {
+      "ref": "schema:nav",
+      "apiId": "navigation_item",
+      "name": "Navigation item",
+      "fields": [
+        { "fieldId": "label", "name": "Label", "type": "string", "localized": true, "isTitle": true },
+        { "fieldId": "slug", "name": "Slug", "type": "slug", "validators": { "unique": true, "required": true } },
+        { "fieldId": "url", "name": "URL", "type": "string" }
+      ]
+    },
+    {
+      "ref": "schema:header",
+      "apiId": "site_header",
+      "name": "Site header",
+      "fields": [
+        { "fieldId": "title", "name": "Title", "type": "string", "isTitle": true },
+        { "fieldId": "slug", "name": "Slug", "type": "slug", "validators": { "unique": true, "required": true } },
+        { "fieldId": "items", "name": "Items", "type": "reference", "relation": { "allowedSchemaRefs": ["schema:nav"], "multiple": true } }
+      ]
+    },
+    {
+      "ref": "schema:page",
+      "apiId": "page",
+      "name": "Page",
+      "fields": [
+        { "fieldId": "title", "name": "Title", "type": "string", "localized": true, "isTitle": true },
+        { "fieldId": "slug", "name": "Slug", "type": "slug", "validators": { "unique": true, "required": true } },
+        { "fieldId": "hero_image", "name": "Hero image", "type": "media" }
+      ]
+    }
+  ],
+  "entries": [
+    { "ref": "entry:nav-home", "schemaRef": "schema:nav", "data": { "slug": "nav-home", "url": "/" }, "localizations": { "en-US": { "label": "Home" }, "is-IS": { "label": "Heim" } } },
+    { "ref": "entry:nav-shop", "schemaRef": "schema:nav", "data": { "slug": "nav-shop", "url": "/shop" }, "localizations": { "en-US": { "label": "Shop" }, "is-IS": { "label": "Verslun" } } },
+    { "ref": "entry:header", "schemaRef": "schema:header", "data": { "slug": "main-header", "title": "Main header", "items": [{ "kind": "entry", "ref": "entry:nav-home" }, { "kind": "entry", "ref": "entry:nav-shop" }] } },
+    { "ref": "entry:about", "schemaRef": "schema:page", "data": { "slug": "about", "hero_image": { "kind": "media", "ref": "media:hero" } }, "localizations": { "en-US": { "title": "About" } } },
+    { "ref": "entry:untitled", "schemaRef": "schema:page", "data": {}, "localizations": { "en-US": { "title": "Untitled" } } }
+  ],
+  "media": [{ "ref": "media:hero", "kind": "URL", "url": "https://example.com/hero.jpg" }]
+}
