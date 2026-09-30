@@ -52,6 +52,9 @@ plugins/eldra-storefront/
 │   ├── eldra-studio-connection/SKILL.md
 │   └── eldra-content-model/SKILL.md
 ├── templates.json              # template registry
+├── templates/
+│   ├── cms-site/content-model.eldra.json
+│   └── shop/content-model.eldra.json
 ├── scripts/
 │   ├── scaffold.sh             # clone template at ref, strip, write env
 │   └── mcp-url.sh              # build the MCP URL from settings
@@ -99,12 +102,14 @@ Asks for org alias and environment (production default, or gateway and MCP URLs)
 
 ### `content-model [--dry-run]`
 
-1. Reads `cms/content-model.eldra.json` from the project (each template ships one, see below).
+1. Reads the manifest for the project's template from the plugin (`templates/<template>/content-model.eldra.json`), or `cms/content-model.eldra.json` in the project if present, which wins.
 2. Through the MCP: `list_locales`, `list_schemas`, `list_field_types`. For every schema in the manifest: `create_schema` if the apiId is absent, otherwise compare fields and `update_schema` only to add missing fields, never to change or remove existing ones. For every entry in the manifest: `list_entries` by slug, `create_entry` as a draft if absent, otherwise leave it alone. Localized values are written for every org locale the manifest has text for; missing locales get the default locale's text and are listed in the report.
 3. Media referenced by the manifest is not created; the report lists the fields an editor must fill in Studio.
 4. Prints a table: schema, action taken, entries created, entries skipped. `--dry-run` prints the table without writing.
 
 Nothing is published. That is the MCP's rule and the command repeats it.
+
+Why the MCP tools and not Studio's archive import: importing an `.eldra.json` archive into an organization that already has content replaces matched schemas (fields not in the archive are removed), duplicates entries that were not made by the importer, and drops every media link on matched entries (verified against web-studio-core, 2026-09-28). The command therefore only creates what is missing and adds fields, and never routes through the importer.
 
 ## Skills
 
@@ -138,11 +143,11 @@ Each skill is a `SKILL.md` with a precise trigger description and supporting ref
 }
 ```
 
-The exact strip and keep lists are settled while building the scaffold, against the real repositories. The refs are tags on those repositories. Pointing the registry at a public starter later is a change to this file only.
+The exact strip and keep lists are settled while building the scaffold, against the real repositories, without changing them: the template repositories are only ever cloned. If a template needs a tag that does not exist, the registry pins a commit instead. The refs are tags on those repositories. Pointing the registry at a public starter later is a change to this file only.
 
 ## Content-model manifests
 
-Each template ships `cms/content-model.eldra.json` in the archive format. lost-horse-web has one for navigation and header today; the rest of its model is only in its seed script, so its manifest is completed from the live schemas. sterkari-web has none; its manifest is exported from its live schemas. Both are part of this work, as pull requests on those repositories.
+The manifests live in this repository under `templates/<name>/content-model.eldra.json`, in the archive format, one per template. They are derived read-only from the template repositories and their organizations: for `cms-site` from the committed generated types in sterkari-web and the live schemas of its organization; for `shop` from lost-horse-web's existing navigation archive plus the schemas its seed script creates. Neither template repository is changed: sterkari-web is a live client site and is read-only reference by standing rule, and keeping both manifests here means one place to maintain them.
 
 ## Error handling
 
@@ -164,7 +169,7 @@ Deploying to Cloudflare, a public starter repository, MCP resources and prompts 
 
 ## Backlog (also in docs/backlog.md)
 
-1. Deploy to Cloudflare: Workers Builds, release and production branches, the Studio deploy hook. Internal-leaning; may become a second, staff-only plugin.
+1. Deploy to Cloudflare: Workers Builds, release and production branches, the Studio deploy hook. Customer-site deploys are release-gated on purpose (merge the release PR, never deploy on push to main) and the skill must say so. Internal-leaning; may become a second, staff-only plugin.
 2. Public starter repository replacing the private templates.
 3. MCP resources and a storefront prompt so claude.ai users get the same guidance.
 4. Product tools in the MCP, then a `shop` content-model that seeds a catalog.
