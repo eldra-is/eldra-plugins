@@ -71,7 +71,7 @@ org: sits                      # organization alias
 environment: production        # or the name of a custom environment
 gateway: https://web.eldra.app/api
 mcp: https://mcp.eldra.app
-template: cms-site             # which template this site came from
+template: starter              # which template this site came from
 ---
 ```
 
