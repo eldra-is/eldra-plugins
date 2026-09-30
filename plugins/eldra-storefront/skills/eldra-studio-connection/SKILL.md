@@ -1,6 +1,6 @@
 ---
 name: eldra-studio-connection
-description: This skill should be used when the user configures ".env", runtime config or environment variables for an Eldra storefront ("ELDRA_ORG_ID", "BASE_API_URL", "PREVIEW_TOKEN", "NUXT_PUBLIC_CHECKOUT_URL"), sees "ORIGIN_NOT_REGISTERED", asks why drafts do not show, how preview tokens or storefront origins work, or how the Eldra MCP login and permissions work.
+description: This skill should be used when the user configures ".env", runtime config or environment variables for an Eldra storefront ("ELDRA_ORG_ID", "BASE_API_URL", "PREVIEW_TOKEN", "NUXT_PUBLIC_CHECKOUT_URL"), sees "ORIGIN_NOT_REGISTERED", asks why drafts do not show, how preview tokens or storefront origins work, how a statically generated site rebuilds when content is published (the deploy hook), or how the Eldra MCP login and permissions work.
 ---
 
 # Connecting a storefront to Eldra Studio

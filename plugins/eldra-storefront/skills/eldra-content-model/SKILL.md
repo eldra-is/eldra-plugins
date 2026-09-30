@@ -1,6 +1,6 @@
 ---
 name: eldra-content-model
-description: This skill should be used when the user designs or changes Eldra CMS schemas or fields, edits "cms/content-model.eldra.json", asks how to model a page, section, menu or singleton in Studio, or asks Claude to create schemas or entries through the Eldra MCP tools ("create_schema", "update_schema", "create_entry").
+description: This skill should be used when the user designs or changes Eldra CMS schemas or fields, edits "cms/content-model.eldra.json", asks how to model a page, section, menu or singleton in Studio, asks Claude to create schemas or entries through the Eldra MCP tools ("create_schema", "update_schema", "create_entry"), or asks about importing or exporting a Studio content archive (".eldra.json").
 ---
 
 # Eldra content model
@@ -16,8 +16,8 @@ types, so every design choice here shows up in code. The project's model lives i
   one breaks the generated types and every read; add a new field instead.
 - One title field per schema (`isTitle: true`); it is what Studio lists.
 - Every schema the site reads by URL or as a singleton has a `slug` field of type `slug` with
-  `validators.unique: true`. Singletons (header, footer) are one entry found by a fixed slug, not a
-  schema with one row assumed.
+  `validators.unique: true`. Singletons (header, footer) are one entry found by a fixed slug; never
+  rely on a schema happening to hold a single entry.
 - Text a visitor reads is `localized: true`; ids, slugs, URLs, numbers and flags are not.
 - Reference fields name their allowed schemas (`relation.allowedSchemaIds`) and say whether they
   hold many (`relation.multiple`). An open reference produces a union type nobody can render.
