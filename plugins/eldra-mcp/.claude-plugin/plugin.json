@@ -1,6 +1,6 @@
 {
   "name": "eldra-mcp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The Eldra Studio MCP connector for one organization, chosen with ELDRA_ORG. Drafts only: a person publishes in Studio.",
   "author": { "name": "Eldra", "url": "https://eldra.is" },
   "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-mcp",

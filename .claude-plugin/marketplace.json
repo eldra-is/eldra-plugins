@@ -13,13 +13,13 @@
         "name": "Eldra"
       },
       "category": "productivity",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-mcp",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/eldra-is/eldra-plugins.git",
         "path": "plugins/eldra-mcp",
-        "ref": "eldra-mcp-v0.0.0"
+        "ref": "eldra-mcp-v0.1.0"
       }
     },
     {
@@ -29,13 +29,13 @@
         "name": "Eldra"
       },
       "category": "development",
-      "version": "0.0.0",
+      "version": "0.1.0",
       "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-storefront",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/eldra-is/eldra-plugins.git",
         "path": "plugins/eldra-storefront",
-        "ref": "eldra-storefront-v0.0.0"
+        "ref": "eldra-storefront-v0.1.0"
       }
     }
   ]

@@ -22,10 +22,11 @@ can be installed once its first release is out.
 
 - `node scripts/validate-plugins.mjs .` checks the marketplace, every plugin manifest, command and
   skill; `bash scripts/test.sh` runs the tests. CI runs both.
-- Pull request titles are conventional commits (`feat(eldra-storefront): …`); release-please turns
-  them into one release per plugin.
-- Release PRs are opened and updated by release-please with the organization's release-please GitHub
-  App (secrets `RELEASE_PLEASE_APP_ID` and `RELEASE_PLEASE_PRIVATE_KEY`), so CI runs on them like on
-  any other PR. The release workflow also runs the validator itself before pushing the synced refs.
+- Pull request titles are conventional commits (`feat(eldra-storefront): …`).
+- Releases are cut by hand for now: bump `version` in the plugin's `plugin.json`, run
+  `node scripts/sync-marketplace-refs.mjs .` so the marketplace points at the new tag, merge that
+  PR, then tag the merge commit `<plugin>-v<version>` (for example `eldra-storefront-v0.2.0`) and
+  push the tag. The marketplace installs plugins from those tags, so a plugin is not installable at
+  a version until its tag exists. Automating this with release-please is in `docs/backlog.md`.
 - `docs/testing.md` is the manual pass before a release. Design documents live in `docs/specs/`,
   and `docs/backlog.md` lists what is deliberately not built yet.
