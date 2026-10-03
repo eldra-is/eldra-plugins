@@ -24,9 +24,8 @@ can be installed once its first release is out.
   skill; `bash scripts/test.sh` runs the tests. CI runs both.
 - Pull request titles are conventional commits (`feat(eldra-storefront): …`); release-please turns
   them into one release per plugin.
-- Release PRs are opened and updated by release-please with the repository token, so CI does not run
-  on them; the release workflow runs the validator itself before pushing, and if branch protection
-  requires checks, an administrator merges release PRs (or configures a GitHub App token for
-  release-please).
+- Release PRs are opened and updated by release-please with the organization's release-please GitHub
+  App (secrets `RELEASE_PLEASE_APP_ID` and `RELEASE_PLEASE_PRIVATE_KEY`), so CI runs on them like on
+  any other PR. The release workflow also runs the validator itself before pushing the synced refs.
 - `docs/testing.md` is the manual pass before a release. Design documents live in `docs/specs/`,
   and `docs/backlog.md` lists what is deliberately not built yet.
