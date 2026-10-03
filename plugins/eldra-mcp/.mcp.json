@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "eldra": {
+      "type": "http",
+      "url": "https://mcp.eldra.app/${ELDRA_ORG}/mcp"
+    }
+  }
+}

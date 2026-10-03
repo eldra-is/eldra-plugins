@@ -1,0 +1,42 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "eldra",
+  "description": "Claude Code plugins from Eldra: build storefronts on the Eldra public API and connect to Eldra Studio.",
+  "owner": {
+    "name": "Eldra"
+  },
+  "plugins": [
+    {
+      "name": "eldra-mcp",
+      "description": "Only the Eldra Studio MCP connector, for one organization set with ELDRA_ORG. For content editors and anyone who does not write code.",
+      "author": {
+        "name": "Eldra"
+      },
+      "category": "productivity",
+      "version": "0.1.0",
+      "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-mcp",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/eldra-is/eldra-plugins.git",
+        "path": "plugins/eldra-mcp",
+        "ref": "eldra-mcp-v0.1.0"
+      }
+    },
+    {
+      "name": "eldra-storefront",
+      "description": "Build a storefront on the Eldra public API: scaffold from a template, connect to a Studio organization, create its content model through the Eldra MCP, and write code against @eldrajs/sdk the way Eldra does.",
+      "author": {
+        "name": "Eldra"
+      },
+      "category": "development",
+      "version": "0.1.0",
+      "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-storefront",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/eldra-is/eldra-plugins.git",
+        "path": "plugins/eldra-storefront",
+        "ref": "eldra-storefront-v0.1.0"
+      }
+    }
+  ]
+}
