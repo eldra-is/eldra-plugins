@@ -68,12 +68,13 @@ message and stop.
 | --- | --- |
 | `{ "schema": apiId }` | add `apiId` to `created.schemas` |
 | `{ "fields": ["apiId.fieldId", …] }` | add each to `created.fields` |
-| `{ "relinked": apiId }` | nothing |
+| `{ "relinked": "apiId.fieldId" }` | nothing |
 | `{ "lookup": { "schema", "slug" } }` | set `entries[schema][slug]` to the first returned entry's `id`, or `null` when none |
 | `{ "entry": ref }` | set `created.entries[ref]` to the new entry's `id` |
 | `{ "linked": ref }` | add `ref` to `created.linked` |
 
-After a phase whose steps were `create_schema` or `update_schema`, rebuild `schemas` as in step 2.
+After a phase whose steps were `create_schema`, `add_schema_field` or `update_schema_field`, rebuild
+`schemas` as in step 2.
 Then run the planner again. Never edit the step arguments; if one looks wrong, stop and report it.
 
 In a dry run the planner only returns `list_entries` steps. Never call a write tool in a dry run.
@@ -90,7 +91,9 @@ Print `report.table`, then these lists when not empty:
 - `conflicts`: fields that exist with another type or localization; left unchanged and not written.
 - `mediaFields`: media the manifest references. Media is not created; an editor fills these in Studio.
 - `fallbackLocales`: locales that got the default locale's text; an editor translates them.
-- `missingLocales`: manifest locales the organization does not have; add them in Studio and run again.
+- `missingLocales`: manifest locales the organization does not have. Ask the person whether to add
+  them. With their yes, call `add_locale` for each (it needs the owner, administrator or technical
+  administrator role; on `ACCESS_DENIED` such a person adds them in Studio), then run again.
 - `notes`.
 
 End with: "Nothing was published. Review and publish the drafts in Studio." In a real run that
@@ -107,5 +110,7 @@ nothing was written."
 | `UNAUTHENTICATED` | The login expired; run `/mcp`, authenticate, run again. |
 | `ACCESS_DENIED` | The person's organization role does not allow this write; an organization administrator can change the role. Do not retry. |
 | `RATE_LIMITED` | Too many writes in a minute; wait a minute and run again. |
+| `SCHEMA_CHANGED` | Someone changed the schema during the run; run again, it continues from where it stopped. |
+| `CMS_ENTRY_STALE_UPDATE` | Someone saved the entry at the same moment; run again. |
 | `UPSTREAM_ERROR` | An Eldra service did not answer; try again later. |
 | anything else | Show the id and message as returned. |

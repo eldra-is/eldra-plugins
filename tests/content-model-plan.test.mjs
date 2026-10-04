@@ -74,10 +74,11 @@ test('relations are filled in on schemas this run created', () => {
   assert.equal(result.phase, 'schema-relations');
   assert.equal(result.steps.length, 1);
   const [step] = result.steps;
-  assert.equal(step.tool, 'update_schema');
+  assert.equal(step.tool, 'update_schema_field');
   assert.equal(step.args.schemaId, ID.site_header);
-  assert.equal(step.args.fields.length, 3);
-  assert.deepEqual(step.args.fields.find((f) => f.fieldId === 'items').relation.allowedSchemaIds, [ID.navigation_item]);
+  assert.equal(step.args.fieldId, 'items');
+  assert.deepEqual(step.args.changes, { relation: { allowedSchemaIds: [ID.navigation_item] } });
+  assert.equal(step.args.fields, undefined);
 });
 
 test('adds only missing fields to an existing schema, keeps extra fields and reports conflicts', () => {
@@ -87,13 +88,15 @@ test('adds only missing fields to an existing schema, keeps extra fields and rep
   state.schemas[2] = { id: ID.page, apiId: 'page', fields: [title, legacy] };
   const result = plan(manifest, state);
   assert.equal(result.phase, 'schemas');
-  assert.equal(result.steps.length, 1);
-  const [step] = result.steps;
-  assert.equal(step.tool, 'update_schema');
-  assert.deepEqual(step.args.fields.map((f) => f.fieldId), ['title', 'legacy_banner', 'slug', 'hero_image']);
-  assert.deepEqual(step.args.fields[0], title);
-  assert.deepEqual(step.args.fields[1], legacy);
-  assert.deepEqual(step.record, { fields: ['page.slug', 'page.hero_image'] });
+  assert.deepEqual(result.steps.map((s) => [s.tool, s.args.field.fieldId]), [
+    ['add_schema_field', 'slug'],
+    ['add_schema_field', 'hero_image'],
+  ]);
+  for (const step of result.steps) {
+    assert.equal(step.args.schemaId, ID.page);
+    assert.equal(step.args.fields, undefined, 'never sends a whole field list');
+  }
+  assert.deepEqual(result.steps.map((s) => s.record), [{ fields: ['page.slug'] }, { fields: ['page.hero_image'] }]);
   assert.match(result.report.conflicts[0], /^page\.title: the organization has string, the manifest wants string \(localized\)/);
   assert.equal(result.report.rows[2].action, 'add fields: slug, hero_image; conflicts: title');
 });
@@ -104,10 +107,10 @@ test('a field added to an existing schema is never a second title and never requ
   state.schemas[2] = { id: ID.page, apiId: 'page', fields: [name] };
   const result = plan(manifest, state);
   assert.equal(result.phase, 'schemas');
-  assert.equal(result.steps.length, 1);
-  const [step] = result.steps;
-  const title = step.args.fields.find((f) => f.fieldId === 'title');
-  const slug = step.args.fields.find((f) => f.fieldId === 'slug');
+  assert.ok(result.steps.every((s) => s.tool === 'add_schema_field'));
+  const added = (id) => result.steps.find((s) => s.args.field.fieldId === id).args.field;
+  const title = added('title');
+  const slug = added('slug');
   assert.equal(title.isTitle, false);
   assert.deepEqual(slug.validators, { unique: true });
   assert.ok(result.report.notes.includes("page.title: added without isTitle; the organization's schema already has a title field"));
@@ -136,7 +139,9 @@ test('an added field with only a required validator drops the whole validators k
   };
   const result = plan(customManifest, state);
   const [step] = result.steps;
-  const note = step.args.fields.find((f) => f.fieldId === 'note');
+  assert.equal(step.tool, 'add_schema_field');
+  const note = step.args.field;
+  assert.equal(note.fieldId, 'note');
   assert.equal('validators' in note, false);
   assert.ok(result.report.notes.includes('thing.note: added without required; set it in Studio once existing entries have values'));
 });
