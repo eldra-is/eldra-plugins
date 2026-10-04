@@ -39,16 +39,27 @@ The MCP acts as the logged-in member and writes drafts only. Rules:
    (`{ "en-US": "About", "is-IS": "Um okkur" }`) for every organization locale.
 2. Before `create_schema`, call `list_schemas` and `list_field_types`; reuse an existing schema or
    field id rather than creating a near-duplicate.
-3. `update_schema` replaces the whole field list: fetch the schema, resend every existing field
-   unchanged, and append the new ones. Never drop or alter a field you did not add.
+3. Edit schemas field by field: `add_schema_field` for a new field, `update_schema_field` to change
+   a label, help text or select options, or to widen a reference's allowed targets, and
+   `reorder_schema_fields` to reorder. `update_schema` only renames. No tool removes a field or a
+   select option, narrows a reference, or changes a field's type; those are deliberate changes a
+   person makes in Studio.
 4. Before `create_entry`, search with `list_entries` (`filter: ["slug:eq:<slug>"]`) and check
    `check_unique_field`; prefer `update_entry` on an existing draft over a duplicate.
-5. Reference values are `{ "value": "<entry id>", "type": "entry" }`, in a list when the field is
-   multiple.
+   `update_entry` is a partial patch: name only the fields you change, the rest keep their value. A
+   localized field merges per locale, and `null` clears a field or one locale's value. `get_entry`
+   returns the entry in the same shape you write.
+5. Reference values are `{ "value": "<entry id>" }` for entries and
+   `{ "value": "<product id>", "type": "product" }` for products, in a list when the field is
+   multiple. Media fields take a list of asset ids. Localized SEO is keyed by property first:
+   `{ "title": { "is-IS": "…" } }`.
 6. Media: `upload_asset_from_url` (public https URL) or `upload_asset` (small base64), alt text in
    every locale, then the asset id in the media field.
 7. Never claim content is live. Report the ids of everything created or changed.
 8. On `ACCESS_DENIED`, explain that the member's role does not allow it and stop; do not retry.
+9. A new language: `add_locale` (owner, administrator or technical administrator role), then fill
+   each entry with `update_entry` patches that name only the new locale, for example
+   `{ "title": { "pl-PL": "O nas" } }`. The other languages stay untouched.
 
 Use `/eldra-storefront:content-model` for the project's manifest rather than issuing these calls by
 hand; it follows these rules and reports conflicts instead of changing fields.

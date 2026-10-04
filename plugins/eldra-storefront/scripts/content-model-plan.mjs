@@ -66,15 +66,16 @@ function linksComplete(orgField, wanted) {
   );
 }
 
-function withLinks(orgField, wanted) {
-  const next = structuredClone(orgField);
+// The update_schema_field changes that widen a reference field to the targets the manifest wants.
+function linkChanges(orgField, wanted) {
+  const changes = {};
   if (wanted.relation) {
-    next.relation = { ...next.relation, allowedSchemaIds: union(next.relation?.allowedSchemaIds, wanted.relation.allowedSchemaIds) };
+    changes.relation = { allowedSchemaIds: union(orgField.relation?.allowedSchemaIds, wanted.relation.allowedSchemaIds) };
   }
   if (wanted.metadata?.allowedSchemas) {
-    next.metadata = { ...next.metadata, allowedSchemas: union(next.metadata?.allowedSchemas, wanted.metadata.allowedSchemas) };
+    changes.metadata = { allowedSchemas: union(orgField.metadata?.allowedSchemas, wanted.metadata.allowedSchemas) };
   }
-  return next;
+  return changes;
 }
 
 // The create_entry data for one manifest entry, plus the references to link afterwards.
@@ -185,22 +186,26 @@ export function plan(manifest, state, { dryRun = false } = {}) {
       }
       return field;
     });
-    if (added.length) {
+    // One add_schema_field call per missing field: the MCP edits schemas field by field
+    // and never takes a whole field list, so existing fields cannot be dropped.
+    for (const field of added) {
       schemaSteps.push({
-        tool: 'update_schema',
-        args: { schemaId: org.id, fields: [...(org.fields ?? []), ...added] },
-        record: { fields: added.map((f) => `${schema.apiId}.${f.fieldId}`) },
+        tool: 'add_schema_field',
+        args: { schemaId: org.id, field },
+        record: { fields: [`${schema.apiId}.${field.fieldId}`] },
       });
     }
     const ours = (fieldId) => created.schemas.includes(schema.apiId) || created.fields.includes(`${schema.apiId}.${fieldId}`);
     const unlinked = converted
       .map((c) => c.field)
       .filter((f) => orgFields.has(f.fieldId) && ours(f.fieldId) && !linksComplete(orgFields.get(f.fieldId), f));
-    if (unlinked.length) {
+    // Widen each reference field's allowed targets with update_schema_field; relation and
+    // metadata merge per key there, and widening is always allowed.
+    for (const wanted of unlinked) {
       relinkSteps.push({
-        tool: 'update_schema',
-        args: { schemaId: org.id, fields: (org.fields ?? []).map((f) => { const w = unlinked.find((u) => u.fieldId === f.fieldId); return w ? withLinks(f, w) : f; }) },
-        record: { relinked: schema.apiId },
+        tool: 'update_schema_field',
+        args: { schemaId: org.id, fieldId: wanted.fieldId, changes: linkChanges(orgFields.get(wanted.fieldId), wanted) },
+        record: { relinked: `${schema.apiId}.${wanted.fieldId}` },
       });
     }
     const addedEarlier = created.fields.filter((f) => f.startsWith(`${schema.apiId}.`)).map((f) => f.slice(schema.apiId.length + 1));

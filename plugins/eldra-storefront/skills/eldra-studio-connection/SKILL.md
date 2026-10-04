@@ -57,7 +57,16 @@ and the host's settings, never in the repository, `.env.example` or a skill.
 - Login: the person's own Studio account, a one-time code, and consent. The assistant acts with that
   person's role in the organization, nothing more.
 - Only members of the organization can connect, and only when the MCP feature is enabled for it.
-- Everything the MCP writes is a draft. It cannot publish or delete; a person publishes in Studio.
+- What it can do: content schemas and entries, media and alt text, languages, products (texts in
+  every language, options, variants, images, tags, categories), categories and collections, and a
+  read of the site setup (`get_site_setup`: features, currency, languages, storefront URL and
+  origins, inventory locations).
+- What it never does: publish or delete anything, set or change prices, stock, tax or discounts, or
+  touch payment settings. New products, categories and collections are drafts with price 0; a person
+  sets prices and stock and activates them in Studio. Editing something already live is live at
+  once. In an organization connected to Regla, products come from Regla and cannot be created
+  through the MCP.
+- Everything the MCP writes to content is a draft; a person publishes in Studio.
 - Error ids: `ORGANIZATION_NOT_FOUND` (not a member), `FEATURE_DISABLED` (MCP not enabled),
   `PRIVILEGED_SESSION_REQUIRED` (a login with platform roles reached the MCP), `UNAUTHENTICATED`
   (log in again with `/mcp`), `ACCESS_DENIED` (role does not allow the write; do not retry).

@@ -1,8 +1,10 @@
 # eldra-mcp
 
-The Eldra Studio MCP connector, and nothing else. It lets Claude read and write draft content and
-media in one Studio organization with your own login. Nothing it writes is published; a person
-publishes in Studio.
+The Eldra Studio MCP connector, and nothing else. It lets Claude work in one Studio organization
+with your own login: content schemas and entries, media, languages, products, categories and
+collections. Content is written as drafts, and new products, categories and collections start as
+drafts at price 0. Claude never publishes, deletes, or sets prices, stock or tax; a person does that
+in Studio.
 
 ## Install
 
