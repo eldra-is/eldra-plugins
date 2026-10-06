@@ -1,6 +1,6 @@
 {
   "name": "eldra-storefront",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Build an Eldra storefront: scaffold from the public starter, connect a Studio organization, create its content model through the Eldra MCP, and write code against @eldrajs/sdk.",
   "author": { "name": "Eldra", "url": "https://eldra.is" },
   "homepage": "https://github.com/eldra-is/eldra-plugins/tree/main/plugins/eldra-storefront",

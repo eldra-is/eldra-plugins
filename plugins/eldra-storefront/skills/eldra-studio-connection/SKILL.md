@@ -61,12 +61,19 @@ and the host's settings, never in the repository, `.env.example` or a skill.
   every language, options, variants, images, tags, categories), categories and collections, and a
   read of the site setup (`get_site_setup`: features, currency, languages, storefront URL and
   origins, inventory locations).
-- What it never does: publish or delete anything, set or change prices, stock, tax or discounts, or
-  touch payment settings. New products, categories and collections are drafts with price 0; a person
-  sets prices and stock and activates them in Studio. Editing something already live is live at
-  once. In an organization connected to Regla, products come from Regla and cannot be created
-  through the MCP.
-- Everything the MCP writes to content is a draft; a person publishes in Studio.
+- What an organization administrator decides, in Studio under Settings → Developers: eight switches
+  per organization. Writing drafts, media, languages and catalog drafts are on by default;
+  publishing, unpublishing and archiving, activating products and deleting are off by default. A
+  tool behind an "off" switch is simply missing from the tool list, and a call to it anyway answers
+  `MCP_CAPABILITY_DISABLED`; say that an administrator controls it in Studio and stop.
+- What it never does, whatever the switches: set or change prices, stock, tax or discounts, or touch
+  payment settings, users, roles or domains. New products, categories and collections are drafts
+  with price 0; a person sets prices and stock. Editing something already live is live at once. In
+  an organization connected to Regla, products come from Regla and cannot be created through the
+  MCP.
+- Content is a draft until it is published. With publishing switched on, `publish_entry` makes it
+  live and says so; otherwise a person publishes in Studio. Deletes cannot be undone, and published
+  content must be unpublished first.
 - Error ids: `ORGANIZATION_NOT_FOUND` (not a member), `FEATURE_DISABLED` (MCP not enabled),
   `PRIVILEGED_SESSION_REQUIRED` (a login with platform roles reached the MCP), `UNAUTHENTICATED`
   (log in again with `/mcp`), `ACCESS_DENIED` (role does not allow the write; do not retry).
