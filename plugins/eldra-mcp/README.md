@@ -3,9 +3,11 @@
 The Eldra Studio MCP connector, and nothing else. It lets Claude work in one Studio organization
 with your own login: content schemas and entries, media, languages, products, categories and
 collections. Content is written as drafts, and new products, categories and collections start as
-drafts at price 0. Whether Claude may also publish, activate products or delete is decided per
-organization by an administrator in Studio (Settings → Developers); those switches are off by
-default. Claude never sets prices, stock or tax; a person does that in Studio.
+drafts at price 0. Whether Claude may also publish, unpublish, activate products, delete, set
+prices and stock, or read sales reports is decided per organization by an administrator in Studio
+(Settings → AI assistant); those switches are off by default. Prices and stock sit under
+Business-critical changes, at the organization's own risk, and Claude shows every old and new
+figure and waits for your yes. Claude never sets costs, tax, discounts or sales channels.
 
 ## Install
 

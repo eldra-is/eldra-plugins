@@ -61,16 +61,24 @@ and the host's settings, never in the repository, `.env.example` or a skill.
   every language, options, variants, images, tags, categories), categories and collections, and a
   read of the site setup (`get_site_setup`: features, currency, languages, storefront URL and
   origins, inventory locations).
-- What an organization administrator decides, in Studio under Settings → Developers: eight switches
-  per organization. Writing drafts, media, languages and catalog drafts are on by default;
-  publishing, unpublishing and archiving, activating products and deleting are off by default. A
-  tool behind an "off" switch is simply missing from the tool list, and a call to it anyway answers
-  `MCP_CAPABILITY_DISABLED`; say that an administrator controls it in Studio and stop.
-- What it never does, whatever the switches: set or change prices, stock, tax or discounts, or touch
+- What an organization administrator decides, in Studio under Settings → AI assistant: twelve
+  switches per organization, in four cards. Drafts (content, pages, media, languages, catalog) are
+  on by default. Live changes (publishing, unpublishing and archiving, activating products),
+  Business-critical changes (prices, stock, deleting; at the organization's own risk) and Reports
+  (sales figures) are off by default. A tool behind an "off" switch is simply missing from the tool
+  list, and a call to it anyway answers `MCP_CAPABILITY_DISABLED`; `get_assistant_permissions`
+  names the switch. Say that an administrator controls it in Studio and stop.
+- Prices and stock change only through `set_variant_prices` and `set_stock`, which exist only while
+  their business-critical switch is on; otherwise a person sets them in Studio. Read `get_product`
+  first, tell the person every old and new figure and call only after their explicit yes; never
+  infer a price or a stock figure from content or another product. Prices are major units in ISK,
+  the only currency it accepts (`"4990"` is 4.990 kr.). A figure that moved since the read is
+  refused (`PRICE_CHANGED`, `STOCK_CHANGED`), and so is a variant linked to Regla. On an active
+  product the change is live at once.
+- What it never does, whatever the switches: set costs, tax, discounts or sales channels, or touch
   payment settings, users, roles or domains. New products, categories and collections are drafts
-  with price 0; a person sets prices and stock. Editing something already live is live at once. In
-  an organization connected to Regla, products come from Regla and cannot be created through the
-  MCP.
+  with price 0. Editing something already live is live at once. In an organization connected to
+  Regla, products come from Regla and cannot be created through the MCP.
 - Content is a draft until it is published. With publishing switched on, `publish_entry` makes it
   live and says so; otherwise a person publishes in Studio. Deletes cannot be undone, and published
   content must be unpublished first.
