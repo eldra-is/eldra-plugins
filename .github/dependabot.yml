@@ -1,4 +1,4 @@
-# Dependabot version updates: one grouped PR per ecosystem per week for minor and patch
+# Dependabot version updates: one grouped PR per ecosystem per month for minor and patch
 # updates; major updates come as their own PRs. Security updates and alerts are enabled
 # at the organisation level, not here.
 version: 2
@@ -6,8 +6,7 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
     open-pull-requests-limit: 0
     rebase-strategy: "disabled"
     labels:
