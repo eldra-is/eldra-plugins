@@ -1,0 +1,18 @@
+# Dependabot version updates: one grouped PR per ecosystem per week for minor and patch
+# updates; major updates come as their own PRs. Security updates and alerts are enabled
+# at the organisation level, not here.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    groups:
+      github-actions-minor-patch:
+        update-types:
+          - minor
+          - patch
